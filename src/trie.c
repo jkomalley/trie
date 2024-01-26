@@ -84,10 +84,20 @@ bool search(TrieNode* root, char* word, int wordLen){
  * @return true if the word is deleted, otherwise false
  */
 bool delete(TrieNode* root, char* word, int wordLen){
-    (void) root;
-    (void) word;
-    (void) wordLen;
-    return false;
+    TrieNode* curNode = root;
+
+    int letterIndex = 0;
+
+    for(int wordIndex = 0; wordIndex < wordLen; wordIndex++){
+        letterIndex = word[wordIndex] - 'a';
+        if(curNode->children[letterIndex]){
+            curNode = curNode->children[letterIndex];
+        } else break;
+    }
+
+    if(curNode->endOfWord) curNode->endOfWord = false;
+
+    return !curNode->endOfWord;
 }
 
 /**
@@ -101,6 +111,7 @@ void freeTrie(TrieNode* root){
     free(root);
 }
 
+// helper func for printTrieEntries
 void _printTrieHelper(TrieNode* root, char* prefix, int index){
     if(root->endOfWord){
         prefix[index] = '\0';
@@ -114,6 +125,10 @@ void _printTrieHelper(TrieNode* root, char* prefix, int index){
     }
 }
 
+/**
+ * Print all words in the Trie
+ * @param root the root of the Trie to be printed
+ */
 void printTrieEntries(TrieNode* root){
     char word[30];
     int index = 0;
