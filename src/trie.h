@@ -54,6 +54,10 @@ bool delete(TrieNode* root, char* word, int wordLen);
  */
 void freeTrie(TrieNode* root);
 
+/**
+ * Print all words in the Trie
+ * @param root the root of the Trie to be printed
+ */
 void printTrieEntries(TrieNode* root);
 
 #endif /* TRIE_H */
