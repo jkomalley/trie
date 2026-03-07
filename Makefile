@@ -1,5 +1,5 @@
 CC      = gcc
-CFLAGS  = -Wall -Wextra -Werror -std=c11
+CFLAGS  = -Wall -Wextra -Werror -std=c11 -D_POSIX_C_SOURCE=200809L
 SRC     = src/trie.c
 ASAN    = -fsanitize=address,undefined -g
 PREFIX  ?= /usr/local
