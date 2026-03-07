@@ -1,4 +1,6 @@
-main
+demo
 test_bin
 test_asan
+trie.o
+libtrie.a
 *.dSYM/

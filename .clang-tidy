@@ -1,0 +1,16 @@
+Checks: >
+  readability-*,
+  bugprone-*,
+  cert-*,
+  -readability-magic-numbers,
+  -cert-err34-c
+
+CheckOptions:
+  - key: readability-identifier-naming.FunctionCase
+    value: lower_case
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+
+HeaderFilterRegex: 'src/.*\.h'
+
+FormatStyle: none
