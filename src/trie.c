@@ -52,52 +52,42 @@ bool insert(TrieNode* root, char* word){
  * Search for a word in the Trie
  * @param root the root of the Trie to search in
  * @param word the word to search for
- * @param wordLen the length of the word
  * @return true if the word is found, otherwise false
  */
-bool search(TrieNode* root, char* word, int wordLen){
+bool search(TrieNode* root, char* word){
     if(!root) return false;
     if(!word) return false;
-    if(!wordLen) return false;
 
     TrieNode* curNode = root;
 
-    int letterIndex;
-
-    for(int wordIndex = 0; wordIndex < wordLen; wordIndex++){
-        letterIndex = word[wordIndex] - 'a';
-        if(curNode->children[letterIndex]){
-            curNode = curNode->children[letterIndex];
-        } else break;
+    for(int wordIndex = 0; word[wordIndex] != '\0'; wordIndex++){
+        int letterIndex = word[wordIndex] - 'a';
+        if(!curNode->children[letterIndex]) return false;
+        curNode = curNode->children[letterIndex];
     }
 
-    if(curNode->endOfWord) return true;
-
-    return false;
+    return curNode->endOfWord;
 }
 
 /**
  * Delete a word from the Trie
  * @param root the root of the Trie to delete from
  * @param word the word to delete
- * @param wordLen the length of the word
  * @return true if the word is deleted, otherwise false
  */
-bool delete(TrieNode* root, char* word, int wordLen){
+bool delete(TrieNode* root, char* word){
     TrieNode* curNode = root;
 
-    int letterIndex = 0;
-
-    for(int wordIndex = 0; wordIndex < wordLen; wordIndex++){
-        letterIndex = word[wordIndex] - 'a';
-        if(curNode->children[letterIndex]){
-            curNode = curNode->children[letterIndex];
-        } else break;
+    for(int wordIndex = 0; word[wordIndex] != '\0'; wordIndex++){
+        int letterIndex = word[wordIndex] - 'a';
+        if(!curNode->children[letterIndex]) return false;
+        curNode = curNode->children[letterIndex];
     }
 
-    if(curNode->endOfWord) curNode->endOfWord = false;
+    if(!curNode->endOfWord) return false;
 
-    return !curNode->endOfWord;
+    curNode->endOfWord = false;
+    return true;
 }
 
 /**
