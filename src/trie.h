@@ -34,19 +34,17 @@ bool insert(TrieNode* root, char* word);
  * Search for a word in the Trie
  * @param root the root of the Trie to search in
  * @param word the word to search for
- * @param wordLen the length of the word
  * @return true if the word is found, otherwise false
  */
-bool search(TrieNode* root, char* word, int wordLen);
+bool search(TrieNode* root, char* word);
 
 /**
  * Delete a word from the Trie
  * @param root the root of the Trie to delete from
  * @param word the word to delete
- * @param wordLen the length of the word
  * @return true if the word is deleted, otherwise false
  */
-bool delete(TrieNode* root, char* word, int wordLen);
+bool delete(TrieNode* root, char* word);
 
 /**
  * Free the entire Trie structure

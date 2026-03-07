@@ -12,13 +12,13 @@ int main()
 
     printTrieEntries(root);
 
-    if(search(root, "ball", 5)){
+    if(search(root, "ball")){
         printf("ball found :)\n");
     } else {
         printf("ball not found :(\n");
     }
 
-    bool ret = delete(root, "ball", 5);
+    bool ret = delete(root, "ball");
 
     if(ret){
         printf("delete successful\n");
@@ -26,7 +26,7 @@ int main()
         printf("delete not successful\n");
     }
 
-    if(search(root, "ball", 5)){
+    if(search(root, "ball")){
         printf("ball found :)\n");
     } else {
         printf("ball not found :(\n");
