@@ -5,7 +5,7 @@ ASAN    = -fsanitize=address,undefined -g
 PREFIX  ?= /usr/local
 DESTDIR ?=
 
-.PHONY: all demo lib test asan install uninstall clean
+.PHONY: all demo lib test asan valgrind cppcheck ci install uninstall clean
 
 all: demo
 
@@ -25,6 +25,15 @@ test: $(SRC) src/test.c
 asan: $(SRC) src/test.c
 	$(CC) $(CFLAGS) $(ASAN) $^ -o test_asan
 	./test_asan
+
+valgrind: $(SRC) src/test.c
+	$(CC) $(CFLAGS) $^ -o test_bin
+	valgrind --leak-check=full --error-exitcode=1 ./test_bin
+
+cppcheck:
+	cppcheck --enable=all --error-exitcode=1 --suppress=missingIncludeSystem src/
+
+ci: test asan valgrind cppcheck
 
 install: lib
 	install -d $(DESTDIR)$(PREFIX)/lib

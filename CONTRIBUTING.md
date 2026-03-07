@@ -10,9 +10,9 @@ cd trie
 make test
 ```
 
-Optional tools for deeper checking:
-- `valgrind` — heap profiler / leak checker
-- `cppcheck` — static analysis
+Optional tools for deeper checking (mirrors `make ci` / GitHub Actions):
+- `valgrind` — heap profiler / leak checker (Linux only; `apt install valgrind`)
+- `cppcheck` — static analysis (Linux: `apt install cppcheck`; macOS: `brew install cppcheck`)
 
 ## Code Style
 
@@ -27,16 +27,13 @@ Optional tools for deeper checking:
 All changes to `src/trie.c` or `src/trie.h` must be accompanied by tests in `src/test.c`.
 
 ```sh
-make test     # must show 0 failed
-make asan     # must complete with no ASAN / UBSan errors
+make test       # must show 0 failed
+make asan       # must complete with no ASAN / UBSan errors
+make ci         # runs test + asan + valgrind + cppcheck (mirrors GitHub Actions)
 ```
 
-Run with Valgrind to verify there are no memory leaks:
-
-```sh
-make test
-valgrind --leak-check=full --error-exitcode=1 ./test_bin
-```
+`make valgrind` and `make cppcheck` require those tools to be installed.
+`valgrind` is Linux-only; on macOS only `make test` and `make asan` are available.
 
 ## Pull Request Process
 

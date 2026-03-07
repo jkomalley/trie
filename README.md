@@ -28,6 +28,9 @@ A trie (prefix tree) data structure library in C11. Memory-safe, ASAN-clean, and
 make            # build demo binary (./demo)
 make test       # build and run test suite
 make asan       # build and run tests with AddressSanitizer + UBSan
+make valgrind   # run tests under Valgrind (requires valgrind)
+make cppcheck   # run static analysis (requires cppcheck)
+make ci         # run all of the above (mirrors GitHub Actions)
 make lib        # build libtrie.a static library
 make install    # install libtrie.a and trie.h (PREFIX=/usr/local by default)
 make uninstall  # remove installed files
