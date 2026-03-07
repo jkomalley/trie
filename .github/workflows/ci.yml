@@ -28,4 +28,8 @@ jobs:
           valgrind --leak-check=full --error-exitcode=1 ./test_bin
 
       - name: Static analysis (cppcheck)
-        run: cppcheck --enable=all --error-exitcode=1 --suppress=missingIncludeSystem src/
+        run: >
+          cppcheck --enable=all --error-exitcode=1
+          --suppress=missingIncludeSystem
+          --suppress=normalCheckLevelMaxBranches
+          src/

@@ -31,7 +31,10 @@ valgrind: $(SRC) src/test.c
 	valgrind --leak-check=full --error-exitcode=1 ./test_bin
 
 cppcheck:
-	cppcheck --enable=all --error-exitcode=1 --suppress=missingIncludeSystem src/
+	cppcheck --enable=all --error-exitcode=1 \
+	  --suppress=missingIncludeSystem \
+	  --suppress=normalCheckLevelMaxBranches \
+	  src/
 
 ci: test asan valgrind cppcheck
 
