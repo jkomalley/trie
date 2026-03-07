@@ -72,6 +72,40 @@ bool search(TrieNode* root, char* word){
     return curNode->endOfWord;
 }
 
+// Recursive helper: returns true if the node should be freed by its caller.
+// Sets *deleted to true if the word was found and unmarked.
+static bool _deleteHelper(TrieNode* node, char* word, int depth, bool* deleted){
+    if(word[depth] == '\0'){
+        if(node->endOfWord){
+            node->endOfWord = false;
+            *deleted = true;
+        }
+        // Suggest freeing only if we deleted something and node has no children
+        if(!(*deleted)) return false;
+        for(int i = 0; i < ALPHABET_SIZE; i++){
+            if(node->children[i]) return false;
+        }
+        return true;
+    }
+
+    if(word[depth] < 'a' || word[depth] > 'z') return false;
+    int letterIndex = word[depth] - 'a';
+    if(!node->children[letterIndex]) return false;
+
+    if(_deleteHelper(node->children[letterIndex], word, depth + 1, deleted)){
+        free(node->children[letterIndex]);
+        node->children[letterIndex] = NULL;
+        // Propagate freeing upward if this node is now a dead-end
+        if(!node->endOfWord){
+            for(int i = 0; i < ALPHABET_SIZE; i++){
+                if(node->children[i]) return false;
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
 /**
  * Delete a word from the Trie
  * @param root the root of the Trie to delete from
@@ -79,19 +113,9 @@ bool search(TrieNode* root, char* word){
  * @return true if the word is deleted, otherwise false
  */
 bool delete(TrieNode* root, char* word){
-    TrieNode* curNode = root;
-
-    for(int wordIndex = 0; word[wordIndex] != '\0'; wordIndex++){
-        if(word[wordIndex] < 'a' || word[wordIndex] > 'z') return false;
-        int letterIndex = word[wordIndex] - 'a';
-        if(!curNode->children[letterIndex]) return false;
-        curNode = curNode->children[letterIndex];
-    }
-
-    if(!curNode->endOfWord) return false;
-
-    curNode->endOfWord = false;
-    return true;
+    bool deleted = false;
+    _deleteHelper(root, word, 0, &deleted);
+    return deleted;
 }
 
 /**
