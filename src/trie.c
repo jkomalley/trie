@@ -34,6 +34,8 @@ bool insert(TrieNode* root, char* word){
     TrieNode* curNode = root;
 
     for(int wordIndex = 0; word[wordIndex] != '\0'; wordIndex++){
+        if(word[wordIndex] < 'a' || word[wordIndex] > 'z') return false;
+
         int childIndex = word[wordIndex] - 'a';
 
         if(!curNode->children[childIndex]){
@@ -61,6 +63,7 @@ bool search(TrieNode* root, char* word){
     TrieNode* curNode = root;
 
     for(int wordIndex = 0; word[wordIndex] != '\0'; wordIndex++){
+        if(word[wordIndex] < 'a' || word[wordIndex] > 'z') return false;
         int letterIndex = word[wordIndex] - 'a';
         if(!curNode->children[letterIndex]) return false;
         curNode = curNode->children[letterIndex];
@@ -79,6 +82,7 @@ bool delete(TrieNode* root, char* word){
     TrieNode* curNode = root;
 
     for(int wordIndex = 0; word[wordIndex] != '\0'; wordIndex++){
+        if(word[wordIndex] < 'a' || word[wordIndex] > 'z') return false;
         int letterIndex = word[wordIndex] - 'a';
         if(!curNode->children[letterIndex]) return false;
         curNode = curNode->children[letterIndex];
