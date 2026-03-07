@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  matrix:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y gcc valgrind cppcheck clang lcov
+
+      - name: Install tools (macOS)
+        if: runner.os == 'macOS'
+        run: brew install cppcheck
+
+      - name: Run tests
+        run: make test
+
+      - name: Run ASAN/UBSan
+        run: make asan
+
+      - name: Run cppcheck
+        run: make cppcheck
+
+      - name: Run Valgrind
+        if: runner.os == 'Linux'
+        run: make valgrind
+
+      - name: Coverage
+        if: runner.os == 'Linux'
+        run: make coverage
+
+      - name: Upload to Codecov
+        if: runner.os == 'Linux'
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.lcov
+
+      - name: Fuzz (60s)
+        if: runner.os == 'Linux'
+        run: make fuzz FUZZ_TIME=60
+
+  build-and-test:
+    needs: matrix
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "All matrix legs passed"

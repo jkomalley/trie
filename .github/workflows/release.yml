@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install gcc
+        run: sudo apt-get update && sudo apt-get install -y gcc
+
+      - name: Build static library
+        run: make lib
+
+      - name: Create release tarball
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          DIST="trie-${TAG}"
+          mkdir -p "${DIST}"
+          cp src/trie.h libtrie.a README.md LICENSE "${DIST}/"
+          tar czf "${DIST}.tar.gz" "${DIST}"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          gh release create "${TAG}" \
+            "trie-${TAG}.tar.gz" \
+            --generate-notes \
+            --title "trie ${TAG}"

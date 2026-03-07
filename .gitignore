@@ -1,4 +1,15 @@
-main
+demo
 test_bin
 test_asan
+test_cov
+fuzz_bin
+bench_bin
+trie.o
+libtrie.a
+trie.pc
 *.dSYM/
+*.gcda
+*.gcno
+coverage.lcov
+coverage_html/
+docs/
