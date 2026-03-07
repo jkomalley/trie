@@ -8,27 +8,45 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install tools
-        run: sudo apt-get update && sudo apt-get install -y gcc valgrind cppcheck
+      - name: Install tools (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y gcc valgrind cppcheck clang lcov
+
+      - name: Install tools (macOS)
+        if: runner.os == 'macOS'
+        run: brew install cppcheck
 
       - name: Run tests
         run: make test
 
-      - name: Run tests with ASAN/UBSan
+      - name: Run ASAN/UBSan
         run: make asan
 
-      - name: Run tests under Valgrind
-        run: |
-          make test
-          valgrind --leak-check=full --error-exitcode=1 ./test_bin
+      - name: Run cppcheck
+        run: make cppcheck
 
-      - name: Static analysis (cppcheck)
-        run: >
-          cppcheck --enable=all --error-exitcode=1 --check-level=exhaustive
-          --suppress=missingIncludeSystem
-          src/
+      - name: Run Valgrind
+        if: runner.os == 'Linux'
+        run: make valgrind
+
+      - name: Coverage
+        if: runner.os == 'Linux'
+        run: make coverage
+
+      - name: Upload to Codecov
+        if: runner.os == 'Linux'
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.lcov
+
+      - name: Fuzz (60s)
+        if: runner.os == 'Linux'
+        run: make fuzz FUZZ_TIME=60

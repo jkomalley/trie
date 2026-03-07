@@ -1,8 +1,12 @@
 # trie
 
+![CI](https://github.com/jkomalley/trie/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/jkomalley/trie/graph/badge.svg)](https://codecov.io/gh/jkomalley/trie)
+![License](https://img.shields.io/github/license/jkomalley/trie)
+
 A trie (prefix tree) data structure library in C11. Memory-safe, ASAN-clean, and fully tested.
 
-**Version:** 1.0.0
+**Version:** 1.0.0 | **[Documentation](https://jkomalley.github.io/trie)**
 
 ---
 
@@ -30,9 +34,13 @@ make test       # build and run test suite
 make asan       # build and run tests with AddressSanitizer + UBSan
 make valgrind   # run tests under Valgrind (requires valgrind)
 make cppcheck   # run static analysis (requires cppcheck)
-make ci         # run all of the above (mirrors GitHub Actions)
+make coverage   # generate coverage.lcov (requires lcov, Linux/macOS)
+make fuzz       # run libFuzzer for 30s (requires clang)
+make bench      # run insert/search/delete benchmark
+make docs       # generate HTML docs via Doxygen
+make ci         # run test + asan + valgrind + cppcheck + coverage
 make lib        # build libtrie.a static library
-make install    # install libtrie.a and trie.h (PREFIX=/usr/local by default)
+make install    # install libtrie.a, trie.h, and trie.pc (PREFIX=/usr/local by default)
 make uninstall  # remove installed files
 make clean      # remove build artifacts
 ```
@@ -230,6 +238,20 @@ Converts every character in `word` to lowercase in-place. Passing `NULL` is safe
 | `TRIE_VERSION_PATCH` | `0` | Patch version |
 | `TRIE_ALPHABET_SIZE` | `26` | Number of children per node |
 | `TRIE_MAX_WORD_LEN` | `255` | Maximum word length (bytes) |
+
+---
+
+## Performance
+
+Benchmarked on Apple M-series, 10 000 words (`examples/words.txt`), compiled with `-O2`:
+
+| Operation | Words | Time | Throughput |
+|---|---|---|---|
+| insert | 10 000 | 0.96 ms | ~10.4 M ops/sec |
+| search | 10 000 | 0.20 ms | ~49.0 M ops/sec |
+| delete | 10 000 | 0.77 ms | ~13.0 M ops/sec |
+
+`sizeof(TrieNode)` = 224 bytes (26 child pointers + value + endOfWord flag).
 
 ---
 
