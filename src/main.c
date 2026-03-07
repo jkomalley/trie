@@ -3,7 +3,11 @@
 
 int main()
 {
-    TrieNode* root = createTrieNode('\0');
+    TrieNode* root = createTrie();
+    if(!root){
+        fprintf(stderr, "Failed to create trie\n");
+        return 1;
+    }
 
     insert(root, "apple");
     insert(root, "blue");
@@ -18,7 +22,7 @@ int main()
         printf("ball not found :(\n");
     }
 
-    bool ret = delete(root, "ball");
+    bool ret = deleteWord(root, "ball");
 
     if(ret){
         printf("delete successful\n");

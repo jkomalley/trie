@@ -16,11 +16,10 @@ typedef struct TrieNode
 // Trie function prototypes
 
 /**
- * Create a new node and return it
- * @param value character value for the new node
- * @return new trie node
+ * Create an empty root node for a new Trie
+ * @return new trie root node, or NULL on allocation failure
  */
-TrieNode* createTrieNode(char value);
+TrieNode* createTrie(void);
 
 /**
  * Insert a new word into the trie
@@ -44,7 +43,7 @@ bool search(TrieNode* root, char* word);
  * @param word the word to delete
  * @return true if the word is deleted, otherwise false
  */
-bool delete(TrieNode* root, char* word);
+bool deleteWord(TrieNode* root, char* word);
 
 /**
  * Free the entire Trie structure

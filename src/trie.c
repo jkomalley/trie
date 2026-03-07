@@ -7,7 +7,7 @@
  * @param value character value for the new node
  * @return new trie node
  */
-TrieNode* createTrieNode(char value){
+static TrieNode* createTrieNode(char value){
     // allocate memory for the new node
     TrieNode* newNode = (TrieNode*)calloc(1, sizeof(TrieNode));
 
@@ -25,12 +25,23 @@ TrieNode* createTrieNode(char value){
 }
 
 /**
+ * Create an empty root node for a new Trie
+ * @return new trie root node, or NULL on allocation failure
+ */
+TrieNode* createTrie(void){
+    return createTrieNode('\0');
+}
+
+/**
  * Insert a new word into the trie
  * @param root the root of the Trie to insert into
  * @param word the word to insert
  * @return true upon success, otherwise false
  */
 bool insert(TrieNode* root, char* word){
+    if(!root) return false;
+    if(!word) return false;
+
     TrieNode* curNode = root;
 
     for(int wordIndex = 0; word[wordIndex] != '\0'; wordIndex++){
@@ -41,6 +52,8 @@ bool insert(TrieNode* root, char* word){
         if(!curNode->children[childIndex]){
             curNode->children[childIndex] = createTrieNode(word[wordIndex]);
         }
+
+        if(!curNode->children[childIndex]) return false;
 
         curNode = curNode->children[childIndex];
     }
@@ -74,7 +87,7 @@ bool search(TrieNode* root, char* word){
 
 // Recursive helper: returns true if the node should be freed by its caller.
 // Sets *deleted to true if the word was found and unmarked.
-static bool _deleteHelper(TrieNode* node, char* word, int depth, bool* deleted){
+static bool deleteHelper(TrieNode* node, char* word, int depth, bool* deleted){
     if(word[depth] == '\0'){
         if(node->endOfWord){
             node->endOfWord = false;
@@ -92,7 +105,7 @@ static bool _deleteHelper(TrieNode* node, char* word, int depth, bool* deleted){
     int letterIndex = word[depth] - 'a';
     if(!node->children[letterIndex]) return false;
 
-    if(_deleteHelper(node->children[letterIndex], word, depth + 1, deleted)){
+    if(deleteHelper(node->children[letterIndex], word, depth + 1, deleted)){
         free(node->children[letterIndex]);
         node->children[letterIndex] = NULL;
         // Propagate freeing upward if this node is now a dead-end
@@ -112,9 +125,12 @@ static bool _deleteHelper(TrieNode* node, char* word, int depth, bool* deleted){
  * @param word the word to delete
  * @return true if the word is deleted, otherwise false
  */
-bool delete(TrieNode* root, char* word){
+bool deleteWord(TrieNode* root, char* word){
+    if(!root) return false;
+    if(!word) return false;
+
     bool deleted = false;
-    _deleteHelper(root, word, 0, &deleted);
+    deleteHelper(root, word, 0, &deleted);
     return deleted;
 }
 
@@ -123,6 +139,7 @@ bool delete(TrieNode* root, char* word){
  * @param root the root of the Trie to be freed
  */
 void freeTrie(TrieNode* root){
+    if(!root) return;
     for(int alphaIndex = 0; alphaIndex < ALPHABET_SIZE; alphaIndex++){
         if(root->children[alphaIndex]) freeTrie(root->children[alphaIndex]);
     }
@@ -130,7 +147,7 @@ void freeTrie(TrieNode* root){
 }
 
 // helper func for printTrieEntries
-void _printTrieHelper(TrieNode* root, char* prefix, int index, int maxLen){
+static void printHelper(TrieNode* root, char* prefix, int index, int maxLen){
     if(index >= maxLen) return;
     if(root->endOfWord){
         prefix[index] = '\0';
@@ -139,7 +156,7 @@ void _printTrieHelper(TrieNode* root, char* prefix, int index, int maxLen){
     for(int alphaIndex = 0; alphaIndex < ALPHABET_SIZE; alphaIndex++){
         if(root->children[alphaIndex]){
             prefix[index] = alphaIndex + 'a';
-            _printTrieHelper(root->children[alphaIndex], prefix, index + 1, maxLen);
+            printHelper(root->children[alphaIndex], prefix, index + 1, maxLen);
         }
     }
 }
@@ -149,7 +166,8 @@ void _printTrieHelper(TrieNode* root, char* prefix, int index, int maxLen){
  * @param root the root of the Trie to be printed
  */
 void printTrieEntries(TrieNode* root){
+    if(!root) return;
     char word[256];
     int index = 0;
-    _printTrieHelper(root, word, index, 255);
+    printHelper(root, word, index, 255);
 }
