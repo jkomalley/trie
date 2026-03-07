@@ -112,7 +112,8 @@ void freeTrie(TrieNode* root){
 }
 
 // helper func for printTrieEntries
-void _printTrieHelper(TrieNode* root, char* prefix, int index){
+void _printTrieHelper(TrieNode* root, char* prefix, int index, int maxLen){
+    if(index >= maxLen) return;
     if(root->endOfWord){
         prefix[index] = '\0';
         printf("%s\n", prefix);
@@ -120,7 +121,7 @@ void _printTrieHelper(TrieNode* root, char* prefix, int index){
     for(int alphaIndex = 0; alphaIndex < ALPHABET_SIZE; alphaIndex++){
         if(root->children[alphaIndex]){
             prefix[index] = alphaIndex + 'a';
-            _printTrieHelper(root->children[alphaIndex], prefix, index + 1);   
+            _printTrieHelper(root->children[alphaIndex], prefix, index + 1, maxLen);
         }
     }
 }
@@ -130,7 +131,7 @@ void _printTrieHelper(TrieNode* root, char* prefix, int index){
  * @param root the root of the Trie to be printed
  */
 void printTrieEntries(TrieNode* root){
-    char word[30];
+    char word[256];
     int index = 0;
-    _printTrieHelper(root, word, index);
+    _printTrieHelper(root, word, index, 255);
 }
