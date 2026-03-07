@@ -129,7 +129,7 @@ int main(void) {
     {
         TrieNode* root = trie_create();
 
-        char long_word[] = "abcdefghijklmnopqrstuvwxyzabcde";
+        const char long_word[] = "abcdefghijklmnopqrstuvwxyzabcde";
         check("insert long word returns true", trie_insert(root, long_word) == true);
         check("search long word returns true", trie_search(root, long_word) == true);
 
