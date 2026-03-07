@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build-and-test:
+  matrix:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -50,3 +50,9 @@ jobs:
       - name: Fuzz (60s)
         if: runner.os == 'Linux'
         run: make fuzz FUZZ_TIME=60
+
+  build-and-test:
+    needs: matrix
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "All matrix legs passed"
