@@ -29,7 +29,6 @@ jobs:
 
       - name: Static analysis (cppcheck)
         run: >
-          cppcheck --enable=all --error-exitcode=1
+          cppcheck --enable=all --error-exitcode=1 --check-level=exhaustive
           --suppress=missingIncludeSystem
-          --suppress=normalCheckLevelMaxBranches
           src/
