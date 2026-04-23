@@ -1,9 +1,11 @@
 demo
+main
 test_bin
 test_asan
 test_cov
 fuzz_bin
 bench_bin
+.claude/
 trie.o
 libtrie.a
 trie.pc
